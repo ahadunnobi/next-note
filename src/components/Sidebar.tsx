@@ -24,11 +24,21 @@ interface SidebarProps {
   setIsOpenMobile?: (open: boolean) => void
 }
 
+import { useTheme } from "next-themes"
+import { Sun, Moon } from "lucide-react"
+
 export default function Sidebar({ isOpenMobile, setIsOpenMobile }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme()
   const router = useRouter()
   const notes = useNoteStore((state) => state.notes)
   const addNote = useNoteStore((state) => state.addNote)
+
+  // useEffect only runs on the client, so now we can safely show the UI
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleNewNote = () => {
     const id = addNote()
@@ -189,20 +199,42 @@ export default function Sidebar({ isOpenMobile, setIsOpenMobile }: SidebarProps)
         {/* Footer */}
         <div className={cn("p-4 border-t border-border-subtle", isCollapsed && "flex justify-center")}>
           <div className={cn(
-            "flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-all cursor-pointer text-text-muted hover:text-white",
-            isCollapsed ? "p-0" : ""
+            "flex flex-col gap-4",
+            isCollapsed ? "items-center" : ""
           )}>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex-shrink-0" />
-            {!isCollapsed && (
-              <div className="flex-1 overflow-hidden">
-                <p className="text-sm font-medium truncate">Ahadunnobi</p>
-                <p className="text-xs text-text-muted truncate">Pro Plan</p>
-              </div>
+            {/* Theme Toggle */}
+            {mounted && (
+              <button 
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className={cn(
+                  "flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-all cursor-pointer text-text-muted hover:text-white w-fit",
+                  isCollapsed ? "p-2" : "px-3"
+                )}
+                title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              >
+                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                {!isCollapsed && <span className="text-sm font-medium">Theme</span>}
+              </button>
             )}
-            {!isCollapsed && <Settings size={16} />}
+
+            <div className={cn(
+              "flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-all cursor-pointer text-text-muted hover:text-white",
+              isCollapsed ? "p-0" : ""
+            )}>
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex-shrink-0" />
+              {!isCollapsed && (
+                <div className="flex-1 overflow-hidden">
+                  <p className="text-sm font-medium truncate">Ahadunnobi</p>
+                  <p className="text-xs text-text-muted truncate">Pro Plan</p>
+                </div>
+              )}
+              {!isCollapsed && <Settings size={16} />}
+            </div>
           </div>
         </div>
       </motion.div>
     </>
   )
+}
+
 }

@@ -2,6 +2,7 @@
 
 import { useNoteStore } from "@/lib/store"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export default function CommandPalette() {
   const [isOpen, setIsOpen] = useState(false)
@@ -35,6 +36,14 @@ export default function CommandPalette() {
   const handleNewNote = () => {
     setIsOpen(false)
     const id = addNote()
+    toast.success("New note created")
+    router.push(`/notes/${id}`)
+  }
+
+  const handleQuickTask = () => {
+    setIsOpen(false)
+    const id = addNote({ title: "Quick Task", folder: "Tasks" })
+    toast.success("Task created successfully")
     router.push(`/notes/${id}`)
   }
 
@@ -74,7 +83,7 @@ export default function CommandPalette() {
                   <div className="p-2 max-h-[60vh] overflow-y-auto subtle-scroll">
                     <Section title="Quick Actions">
                       <Item icon={Plus} label="New Note" shortcut="N" onClick={handleNewNote} />
-                      <Item icon={Zap} label="Quick Task" shortcut="T" />
+                      <Item icon={Zap} label="Quick Task" shortcut="T" onClick={handleQuickTask} />
                     </Section>
 
                     {filteredNotes.length > 0 && (
@@ -114,6 +123,7 @@ export default function CommandPalette() {
     </AnimatePresence>
   )
 }
+
 
 function Section({ title, children }: { title: string, children: React.ReactNode }) {
   return (
