@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
+import { Providers } from "@/components/providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,6 +27,7 @@ export default function RootLayout({
     >
       <body className="h-full bg-bg-dark text-foreground flex overflow-hidden">
         <Sidebar aria-label="Sidebar Navigation" />
+        <CommandPalette />
         <main className="flex-1 overflow-y-auto subtle-scroll relative">
           {/* Subtle background glow effect */}
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-primary/10 blur-[120px] pointer-events-none" />
