@@ -2,6 +2,7 @@
 
 import React from "react"
 import { motion } from "framer-motion"
+import { Button, Chip } from "@heroui/react"
 import { 
   ArrowUpRight, 
   Code2, 
@@ -36,13 +37,20 @@ export default function Home() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight mb-2">Good Evening, Ahad</h1>
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="text-4xl font-bold tracking-tight">Good Evening, Ahad</h1>
+            <Chip color="primary" variant="flat" size="sm" className="mt-1">Pro Plan</Chip>
+          </div>
           <p className="text-text-muted text-lg">Here's what's happening with your tech stacks today.</p>
         </div>
-        <button className="px-5 py-2.5 rounded-lg bg-brand-primary hover:bg-brand-primary/90 text-white font-medium transition-all shadow-lg glow-hover flex items-center gap-2">
-          <Zap size={18} />
+        <Button 
+          color="primary" 
+          variant="shadow" 
+          startContent={<Zap size={18} />}
+          className="font-medium h-11"
+        >
           New Quick Note
-        </button>
+        </Button>
       </div>
 
       {/* Stats Grid */}
