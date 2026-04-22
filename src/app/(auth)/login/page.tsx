@@ -143,32 +143,95 @@ export default function LoginPage() {
               cursor: "bg-brand-primary/20 border border-brand-primary/50",
               tabContent: "group-data-[selected=true]:text-brand-primary"
             }}
-            items={[
-              {
-                id: "email",
-                title: "Email",
-                icon: <Mail size={16} />,
-                content: (
-                  <form onSubmit={handleEmailLogin} className="space-y-4 pt-4">
+          >
+            <Tab
+              key="email"
+              title={
+                <div className="flex items-center gap-2">
+                  <Mail size={16} />
+                  <span>Email</span>
+                </div>
+              }
+            >
+              <form onSubmit={handleEmailLogin} className="space-y-4 pt-4">
+                <Input
+                  label="Email"
+                  placeholder="name@example.com"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  startContent={<Mail size={18} className="text-text-muted" />}
+                  variant="bordered"
+                  classNames={{
+                    inputWrapper: "border-white/10 hover:border-white/20 focus-within:!border-brand-primary",
+                  }}
+                />
+                <Input
+                  label="Password"
+                  placeholder="••••••••"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  startContent={<Lock size={18} className="text-text-muted" />}
+                  variant="bordered"
+                  classNames={{
+                    inputWrapper: "border-white/10 hover:border-white/20 focus-within:!border-brand-primary",
+                  }}
+                />
+                <Button 
+                  type="submit" 
+                  color="primary" 
+                  className="w-full font-semibold h-12 bg-brand-primary shadow-lg shadow-brand-primary/20"
+                  isLoading={loading}
+                  endContent={!loading && <ArrowRight size={18} />}
+                >
+                  Log In
+                </Button>
+              </form>
+            </Tab>
+
+            <Tab
+              key="phone"
+              title={
+                <div className="flex items-center gap-2">
+                  <Phone size={16} />
+                  <span>Phone</span>
+                </div>
+              }
+            >
+              <div className="space-y-4 pt-4">
+                {!isOtpSent ? (
+                  <form onSubmit={handlePhoneSignIn} className="space-y-4">
+                    <div className="phone-input-container">
+                      <PhoneInput
+                        country={"us"}
+                        value={phoneNumber}
+                        onChange={setPhoneNumber}
+                        containerClass="!w-full"
+                        inputClass="!w-full !bg-transparent !border-white/10 !text-white !h-12 !rounded-xl !pl-[48px]"
+                        buttonClass="!bg-white/5 !border-white/10 !rounded-l-xl"
+                        dropdownClass="!bg-bg-dark !text-white border-white/10"
+                      />
+                    </div>
+                    <Button 
+                      type="submit" 
+                      color="primary" 
+                      className="w-full font-semibold h-12 bg-brand-primary shadow-lg shadow-brand-primary/20"
+                      isLoading={loading}
+                      endContent={!loading && <ArrowRight size={18} />}
+                    >
+                      Send Code
+                    </Button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleVerifyOtp} className="space-y-4">
                     <Input
-                      label="Email"
-                      placeholder="name@example.com"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      startContent={<Mail size={18} className="text-text-muted" />}
-                      variant="bordered"
-                      classNames={{
-                        inputWrapper: "border-white/10 hover:border-white/20 focus-within:!border-brand-primary",
-                      }}
-                    />
-                    <Input
-                      label="Password"
-                      placeholder="••••••••"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      startContent={<Lock size={18} className="text-text-muted" />}
+                      label="Verification Code"
+                      placeholder="123456"
+                      type="text"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      startContent={<Fingerprint size={18} className="text-text-muted" />}
                       variant="bordered"
                       classNames={{
                         inputWrapper: "border-white/10 hover:border-white/20 focus-within:!border-brand-primary",
@@ -181,90 +244,19 @@ export default function LoginPage() {
                       isLoading={loading}
                       endContent={!loading && <ArrowRight size={18} />}
                     >
-                      Log In
+                      Verify & Sign In
                     </Button>
+                    <button 
+                      type="button"
+                      onClick={() => setIsOtpSent(false)}
+                      className="text-xs text-text-muted hover:text-white w-full text-center"
+                    >
+                      Change Number
+                    </button>
                   </form>
-                )
-              },
-              {
-                id: "phone",
-                title: "Phone",
-                icon: <Phone size={16} />,
-                content: (
-                  <div className="space-y-4 pt-4">
-                    {!isOtpSent ? (
-                      <form onSubmit={handlePhoneSignIn} className="space-y-4">
-                        <div className="phone-input-container">
-                          <PhoneInput
-                            country={"us"}
-                            value={phoneNumber}
-                            onChange={setPhoneNumber}
-                            containerClass="!w-full"
-                            inputClass="!w-full !bg-transparent !border-white/10 !text-white !h-12 !rounded-xl !pl-[48px]"
-                            buttonClass="!bg-white/5 !border-white/10 !rounded-l-xl"
-                            dropdownClass="!bg-bg-dark !text-white border-white/10"
-                          />
-                        </div>
-                        <Button 
-                          type="submit" 
-                          color="primary" 
-                          className="w-full font-semibold h-12 bg-brand-primary shadow-lg shadow-brand-primary/20"
-                          isLoading={loading}
-                          endContent={!loading && <ArrowRight size={18} />}
-                        >
-                          Send Code
-                        </Button>
-                      </form>
-                    ) : (
-                      <form onSubmit={handleVerifyOtp} className="space-y-4">
-                        <Input
-                          label="Verification Code"
-                          placeholder="123456"
-                          type="text"
-                          value={otp}
-                          onChange={(e) => setOtp(e.target.value)}
-                          startContent={<Fingerprint size={18} className="text-text-muted" />}
-                          variant="bordered"
-                          classNames={{
-                            inputWrapper: "border-white/10 hover:border-white/20 focus-within:!border-brand-primary",
-                          }}
-                        />
-                        <Button 
-                          type="submit" 
-                          color="primary" 
-                          className="w-full font-semibold h-12 bg-brand-primary shadow-lg shadow-brand-primary/20"
-                          isLoading={loading}
-                          endContent={!loading && <ArrowRight size={18} />}
-                        >
-                          Verify & Sign In
-                        </Button>
-                        <button 
-                          type="button"
-                          onClick={() => setIsOtpSent(false)}
-                          className="text-xs text-text-muted hover:text-white w-full text-center"
-                        >
-                          Change Number
-                        </button>
-                      </form>
-                    )}
-                  </div>
-                )
-              }
-            ]}
-          >
-            {(item) => (
-              <Tab 
-                key={item.id} 
-                title={
-                  <div className="flex items-center gap-2">
-                    {item.icon}
-                    <span>{item.title}</span>
-                  </div>
-                }
-              >
-                {item.content}
-              </Tab>
-            )}
+                )}
+              </div>
+            </Tab>
           </Tabs>
           
           {error && (
