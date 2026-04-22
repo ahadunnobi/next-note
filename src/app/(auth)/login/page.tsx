@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { auth, googleProvider, githubProvider, facebookProvider } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
-import { Button, Input, Separator, Tabs, Tab } from "@heroui/react";
+import { Button, Input, Separator, Tabs } from "@heroui/react";
 import { Mail, Lock, Github, Globe, Search, ArrowRight, Phone, Fingerprint, Ghost } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -133,26 +133,23 @@ export default function LoginPage() {
             <p className="text-text-muted mt-2">Log in to your Next Note account</p>
           </div>
 
-          <Tabs 
-            fullWidth 
-            size="md" 
-            aria-label="Login Options"
-            className="mb-6"
-            classNames={{
-              tabList: "bg-white/5 p-1 border border-white/5",
-              cursor: "bg-brand-primary/20 border border-brand-primary/50",
-              tabContent: "group-data-[selected=true]:text-brand-primary"
-            }}
-          >
-            <Tab
-              key="email"
-              title={
-                <div className="flex items-center gap-2">
+          <Tabs className="w-full flex flex-col items-center">
+            <Tabs.ListContainer className="w-full bg-white/5 p-1 border border-white/5 rounded-xl mb-6">
+              <Tabs.List aria-label="Login Options" className="flex w-full">
+                <Tabs.Tab id="email" className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg text-text-muted data-[selected=true]:text-brand-primary data-[selected=true]:bg-brand-primary/20 data-[selected=true]:border data-[selected=true]:border-brand-primary/50 transition-all cursor-pointer">
                   <Mail size={16} />
                   <span>Email</span>
-                </div>
-              }
-            >
+                  <Tabs.Indicator />
+                </Tabs.Tab>
+                <Tabs.Tab id="phone" className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg text-text-muted data-[selected=true]:text-brand-primary data-[selected=true]:bg-brand-primary/20 data-[selected=true]:border data-[selected=true]:border-brand-primary/50 transition-all cursor-pointer">
+                  <Phone size={16} />
+                  <span>Phone</span>
+                  <Tabs.Indicator />
+                </Tabs.Tab>
+              </Tabs.List>
+            </Tabs.ListContainer>
+
+            <Tabs.Panel id="email" className="w-full">
               <form onSubmit={handleEmailLogin} className="space-y-4 pt-4">
                 <Input
                   label="Email"
@@ -188,17 +185,9 @@ export default function LoginPage() {
                   Log In
                 </Button>
               </form>
-            </Tab>
+            </Tabs.Panel>
 
-            <Tab
-              key="phone"
-              title={
-                <div className="flex items-center gap-2">
-                  <Phone size={16} />
-                  <span>Phone</span>
-                </div>
-              }
-            >
+            <Tabs.Panel id="phone" className="w-full">
               <div className="space-y-4 pt-4">
                 {!isOtpSent ? (
                   <form onSubmit={handlePhoneSignIn} className="space-y-4">
@@ -256,7 +245,7 @@ export default function LoginPage() {
                   </form>
                 )}
               </div>
-            </Tab>
+            </Tabs.Panel>
           </Tabs>
           
           {error && (
