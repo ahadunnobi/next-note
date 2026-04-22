@@ -7,7 +7,9 @@ import Placeholder from "@tiptap/extension-placeholder"
 import TaskList from "@tiptap/extension-task-list"
 import TaskItem from "@tiptap/extension-task-item"
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight"
-import { lowlight } from "lowlight"
+import { createLowlight, common } from "lowlight"
+
+const lowlightInstance = createLowlight(common)
 import { 
   MoreHorizontal, 
   Share2, 
@@ -28,10 +30,29 @@ interface EditorProps {
   note: Note
 }
 
+import { toast } from "sonner"
+
 export default function Editor({ note }: EditorProps) {
   const updateNote = useNoteStore((state) => state.updateNote)
   const toggleFavorite = useNoteStore((state) => state.toggleFavorite)
   const deleteNote = useNoteStore((state) => state.deleteNote)
+
+  const handleToggleFavorite = () => {
+    toggleFavorite(note.id)
+    if (!note.isFavorite) {
+      toast.success("Added to favorites")
+    } else {
+      toast.info("Removed from favorites")
+    }
+  }
+
+  const handleDelete = () => {
+    if (confirm("Are you sure you want to delete this note?")) {
+      deleteNote(note.id)
+      toast.error("Note deleted successfully")
+      window.location.href = "/"
+    }
+  }
 
   const editor = useEditor({
     extensions: [
@@ -44,7 +65,7 @@ export default function Editor({ note }: EditorProps) {
         nested: true,
       }),
       CodeBlockLowlight.configure({
-        lowlight,
+        lowlight: lowlightInstance,
       }),
     ],
     content: note.content,
@@ -68,7 +89,10 @@ export default function Editor({ note }: EditorProps) {
     setTitle(newTitle)
     setIsSaving(true)
     updateNote(note.id, { title: newTitle })
-    setTimeout(() => setIsSaving(false), 800)
+    setTimeout(() => {
+      setIsSaving(false)
+      toast.success("Changes saved", { duration: 1500, position: "bottom-center" })
+    }, 800)
   }
 
   return (
@@ -88,7 +112,7 @@ export default function Editor({ note }: EditorProps) {
             <span className="text-[10px] text-brand-primary animate-pulse mr-1 sm:mr-2">Saving...</span>
           )}
           <button 
-            onClick={() => toggleFavorite(note.id)}
+            onClick={handleToggleFavorite}
             className={cn(
               "p-2 rounded-lg transition-colors",
               note.isFavorite ? "text-amber-400 bg-amber-400/10" : "text-text-muted hover:bg-white/5 hover:text-white"
@@ -139,17 +163,13 @@ export default function Editor({ note }: EditorProps) {
           icon={Trash2} 
           label="Delete" 
           danger 
-          onClick={() => {
-            if (confirm("Are you sure you want to delete this note?")) {
-              deleteNote(note.id)
-              window.location.href = "/"
-            }
-          }} 
+          onClick={handleDelete} 
         />
       </div>
     </div>
   )
 }
+
 
 function ToolbarButton({ icon: Icon, label, onClick, danger }: { icon: any, label: string, onClick?: () => void, danger?: boolean }) {
   return (

@@ -1,8 +1,12 @@
 "use client"
 
+import React, { useEffect, useState } from "react"
 import { useNoteStore } from "@/lib/store"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { Search, Plus, Zap, FileText, Settings } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import * as Dialog from "@radix-ui/react-dialog"
 
 export default function CommandPalette() {
   const [isOpen, setIsOpen] = useState(false)

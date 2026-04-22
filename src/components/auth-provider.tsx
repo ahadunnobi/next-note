@@ -6,7 +6,11 @@ import {
   User, 
   signOut as firebaseSignOut,
   signInWithPopup,
-  AuthProvider as FirebaseAuthProvider
+  signInAnonymously as firebaseSignInAnonymously,
+  signInWithPhoneNumber,
+  RecaptchaVerifier,
+  AuthProvider as FirebaseAuthProvider,
+  ConfirmationResult
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
@@ -15,6 +19,9 @@ interface AuthContextType {
   loading: boolean;
   logout: () => Promise<void>;
   signInWithProvider: (provider: FirebaseAuthProvider) => Promise<void>;
+  signInAnonymously: () => Promise<void>;
+  setupRecaptcha: (containerId: string) => RecaptchaVerifier;
+  signInPhone: (phone: string, recaptcha: RecaptchaVerifier) => Promise<ConfirmationResult>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -22,6 +29,9 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   logout: async () => {},
   signInWithProvider: async () => {},
+  signInAnonymously: async () => {},
+  setupRecaptcha: () => ({} as RecaptchaVerifier),
+  signInPhone: async () => ({} as ConfirmationResult),
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -53,8 +63,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const signInAnonymously = async () => {
+    try {
+      await firebaseSignInAnonymously(auth);
+    } catch (error) {
+      console.error("Error signing in anonymously", error);
+    }
+  };
+
+  const setupRecaptcha = (containerId: string) => {
+    const recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
+      size: "invisible",
+    });
+    return recaptchaVerifier;
+  };
+
+  const signInPhone = async (phone: string, recaptcha: RecaptchaVerifier) => {
+    return await signInWithPhoneNumber(auth, phone, recaptcha);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, logout, signInWithProvider }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      logout, 
+      signInWithProvider, 
+      signInAnonymously,
+      setupRecaptcha,
+      signInPhone
+    }}>
       {children}
     </AuthContext.Provider>
   );

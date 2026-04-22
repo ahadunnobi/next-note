@@ -93,3 +93,38 @@ body {
   background: hsl(var(--muted));
   border-radius: 10px;
 }
+
+/* Phone Input Customization */
+.phone-input-container .form-control {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  font-family: inherit !important;
+}
+
+.phone-input-container .flag-dropdown {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px 0 0 12px !important;
+}
+
+.phone-input-container .selected-flag:hover,
+.phone-input-container .selected-flag:focus {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.phone-input-container .country-list {
+  background: hsl(240, 10%, 4%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+}
+
+.phone-input-container .country-list .country:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.phone-input-container .country-list .country.highlight {
+  background: rgba(255, 255, 255, 0.1) !important;
+}

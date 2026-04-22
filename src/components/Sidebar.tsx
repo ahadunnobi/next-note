@@ -13,11 +13,15 @@ import {
   Star,
   Clock,
   X,
-  PlusCircle
+  PlusCircle,
+  User
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useNoteStore } from "@/lib/store"
 import { useRouter } from "next/navigation"
+import { useAuth } from "./auth-provider"
+import { LogOut } from "lucide-react"
+import Link from "next/link"
+import { useNoteStore } from "@/lib/store"
 
 interface SidebarProps {
   isOpenMobile?: boolean
@@ -34,6 +38,7 @@ export default function Sidebar({ isOpenMobile, setIsOpenMobile }: SidebarProps)
   const router = useRouter()
   const notes = useNoteStore((state) => state.notes)
   const addNote = useNoteStore((state) => state.addNote)
+  const { user, logout } = useAuth()
 
   // useEffect only runs on the client, so now we can safely show the UI
   React.useEffect(() => {
@@ -217,24 +222,52 @@ export default function Sidebar({ isOpenMobile, setIsOpenMobile }: SidebarProps)
               </button>
             )}
 
-            <div className={cn(
-              "flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-all cursor-pointer text-text-muted hover:text-white",
-              isCollapsed ? "p-0" : ""
-            )}>
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex-shrink-0" />
-              {!isCollapsed && (
-                <div className="flex-1 overflow-hidden">
-                  <p className="text-sm font-medium truncate">Ahadunnobi</p>
-                  <p className="text-xs text-text-muted truncate">Pro Plan</p>
+            {user ? (
+              <div 
+                className={cn(
+                  "flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-all text-text-muted hover:text-white",
+                  isCollapsed ? "p-0" : ""
+                )}
+              >
+                {user.photoURL ? (
+                  <img src={user.photoURL} className="w-8 h-8 rounded-full flex-shrink-0" alt="Avatar" />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex-shrink-0 flex items-center justify-center text-xs font-bold text-white">
+                    {user.displayName?.[0] || user.email?.[0]?.toUpperCase()}
+                  </div>
+                )}
+                {!isCollapsed && (
+                  <div className="flex-1 overflow-hidden">
+                    <p className="text-sm font-medium truncate">{user.displayName || "User"}</p>
+                    <p className="text-xs text-text-muted truncate">{user.email}</p>
+                  </div>
+                )}
+                {!isCollapsed && (
+                  <button 
+                    onClick={() => logout().then(() => router.push("/login"))}
+                    className="p-1 hover:bg-white/10 rounded text-text-muted hover:text-red-400 transition-colors"
+                  >
+                    <LogOut size={16} />
+                  </button>
+                )}
+              </div>
+            ) : (
+              <Link 
+                href="/login"
+                className={cn(
+                  "flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-all text-text-muted hover:text-white",
+                  isCollapsed ? "p-0" : ""
+                )}
+              >
+                <div className="w-8 h-8 rounded-full bg-white/10 flex-shrink-0 flex items-center justify-center">
+                  <User size={16} />
                 </div>
-              )}
-              {!isCollapsed && <Settings size={16} />}
-            </div>
+                {!isCollapsed && <span className="text-sm font-medium">Log In</span>}
+              </Link>
+            )}
           </div>
         </div>
       </motion.div>
     </>
   )
-}
-
 }
