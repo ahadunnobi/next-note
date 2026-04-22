@@ -7,7 +7,7 @@ import {
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
-import { Button, Input, Separator } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 import { Mail, Lock, User, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";

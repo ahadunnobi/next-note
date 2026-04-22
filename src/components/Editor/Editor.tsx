@@ -152,7 +152,7 @@ export default function Editor({ note, initialTitle, initialContent }: EditorPro
         <h1 
           className="text-3xl sm:text-5xl font-bold tracking-tight outline-none focus:placeholder:opacity-10 caret-brand-primary break-words" 
           contentEditable 
-          suppressContentWarning
+          suppressContentEditableWarning
           onBlur={handleTitleChange}
         >
           {title}
